@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+
+    <!-- Sun Glow Gradient -->
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#facc15" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#eab308" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Back Mountain Gradient -->
+    <linearGradient id="mountainBack" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+
+    <!-- Front Mountain Gradient -->
+    <linearGradient id="mountainFront" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Snow Cap Gradient -->
+    <linearGradient id="snowCap" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+
+    <!-- Highway Ribbon Gradient -->
+    <linearGradient id="roadGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Base with Soft Shadow -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+
+  <!-- Subtle Inner Border Highlight -->
+  <rect x="8" y="8" width="496" height="496" rx="120" fill="none" stroke="#ffffff" stroke-width="4" stroke-opacity="0.25" />
+
+  <!-- Rising Sun Behind Peaks -->
+  <circle cx="256" cy="210" r="85" fill="url(#sunGlow)" />
+  <circle cx="256" cy="210" r="50" fill="#fef08a" />
+
+  <!-- Background Mountain Range -->
+  <polygon points="120,380 230,190 340,380" fill="url(#mountainBack)" />
+  <!-- Back Peak Snow Cap -->
+  <polygon points="230,190 205,235 220,230 230,240 240,230 255,235" fill="url(#snowCap)" />
+
+  <!-- Secondary Right Mountain Range -->
+  <polygon points="260,390 370,220 470,390" fill="#047857" opacity="0.9" />
+  <polygon points="370,220 345,260 360,255 370,265 385,255 395,260" fill="url(#snowCap)" />
+
+  <!-- Foreground Mountain Peak (Prominent) -->
+  <polygon points="50,420 180,240 310,420" fill="url(#mountainFront)" />
+  <!-- Foreground Snow Cap -->
+  <polygon points="180,240 150,285 168,280 180,292 195,280 210,285" fill="url(#snowCap)" />
+
+  <!-- Winding Expressway / Road Path through Sahyadri Hills -->
+  <path d="M 235 340 Q 256 365 240 400 Q 215 450 200 512 L 312 512 Q 295 450 272 400 Q 256 365 277 340 Z" fill="url(#roadGrad)" />
+  
+  <!-- Dashed Center Lane Marking -->
+  <path d="M 256 355 L 256 370 M 255 385 L 254 405 M 252 425 L 250 450 M 248 470 L 246 505" stroke="#059669" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 1" />
+
+  <!-- Compass Star Accent (Top Right) -->
+  <g transform="translate(385, 95)">
+    <circle cx="0" cy="0" r="26" fill="#ffffff" fill-opacity="0.18" />
+    <!-- 4-point star -->
+    <path d="M 0 -22 L 4 -6 L 20 0 L 4 6 L 0 22 L -4 6 L -20 0 L -4 -6 Z" fill="#ffffff" />
+  </g>
+</svg>

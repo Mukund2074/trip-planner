@@ -1,0 +1,22 @@
+[build]
+  command = "bun install && bun run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  BUN_VERSION = "1.4.0"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["mongoose", "mongodb-memory-server"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
