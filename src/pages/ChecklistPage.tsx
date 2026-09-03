@@ -41,6 +41,7 @@ export const ChecklistPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const categoriesOptions = [
+    "Travel & Bookings",
     "Places & Viewpoints",
     "Adventure & Rides",
     "Hotels & Stays",
@@ -50,6 +51,8 @@ export const ChecklistPage: React.FC = () => {
 
   const getCategoryIcon = (categoryName: string) => {
     switch (categoryName) {
+      case "Travel & Bookings":
+        return "🚆";
       case "Places & Viewpoints":
         return "🏔️";
       case "Adventure & Rides":
