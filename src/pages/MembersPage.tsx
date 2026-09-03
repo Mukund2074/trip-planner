@@ -3,6 +3,7 @@ import { useTrip } from "../context/TripContext";
 import { useMemberAuth } from "../context/MemberAuthContext";
 import { apiClient } from "../lib/api";
 import { Member } from "../types";
+import { MemberCardSkeleton } from "../components/common/Skeleton";
 import {
   Users,
   Plus,
@@ -43,11 +44,16 @@ export const MembersPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Password visibility map for organizer view
-  const [visiblePasswords, setVisiblePasswords] = useState<Record<string, string>>({});
-  const [fetchingPasswordId, setFetchingPasswordId] = useState<string | null>(null);
+  const [visiblePasswords, setVisiblePasswords] = useState<
+    Record<string, string>
+  >({});
+  const [fetchingPasswordId, setFetchingPasswordId] = useState<string | null>(
+    null
+  );
 
   // Edit Member Modal state (For Organizer editing another member)
-  const [editingTargetMember, setEditingTargetMember] = useState<Member | null>(null);
+  const [editingTargetMember, setEditingTargetMember] =
+    useState<Member | null>(null);
   const [editNameInput, setEditNameInput] = useState<string>("");
   const [editPhoneInput, setEditPhoneInput] = useState<string>("");
   const [editEmailInput, setEditEmailInput] = useState<string>("");
@@ -58,7 +64,8 @@ export const MembersPage: React.FC = () => {
   const [isEditSubmitting, setIsEditSubmitting] = useState<boolean>(false);
 
   // Check if current user is an Organizer (or if no members exist yet)
-  const isOrganizerLoggedIn = isMemberLoggedIn && Boolean(currentMember?.isOrganizer);
+  const isOrganizerLoggedIn =
+    isMemberLoggedIn && Boolean(currentMember?.isOrganizer);
   const canManageMembers = isOrganizerLoggedIn || memberList.length === 0;
 
   const fetchMembers = async () => {
@@ -152,7 +159,8 @@ export const MembersPage: React.FC = () => {
       }
     } catch (createError: any) {
       console.error("Failed to add member:", createError);
-      const serverMsg = createError?.response?.data?.message || "Failed to add member";
+      const serverMsg =
+        createError?.response?.data?.message || "Failed to add member";
       showToast(serverMsg, "error");
     } finally {
       setIsSubmitting(false);
@@ -220,7 +228,9 @@ export const MembersPage: React.FC = () => {
         const updatedData = updateResponse.data.data;
         setMemberList((previousMembers) =>
           previousMembers.map((memberCandidate) =>
-            memberCandidate._id === updatedData._id ? updatedData : memberCandidate
+            memberCandidate._id === updatedData._id
+              ? updatedData
+              : memberCandidate
           )
         );
 
@@ -233,7 +243,8 @@ export const MembersPage: React.FC = () => {
       }
     } catch (updateError: any) {
       console.error("Failed to update member:", updateError);
-      const serverMsg = updateError?.response?.data?.message || "Failed to update member";
+      const serverMsg =
+        updateError?.response?.data?.message || "Failed to update member";
       showToast(serverMsg, "error");
     } finally {
       setIsEditSubmitting(false);
@@ -249,12 +260,15 @@ export const MembersPage: React.FC = () => {
     try {
       await apiClient.delete(`/members/${memberId}`);
       setMemberList((previousMembers) =>
-        previousMembers.filter((currentMemberItem) => currentMemberItem._id !== memberId)
+        previousMembers.filter(
+          (currentMemberItem) => currentMemberItem._id !== memberId
+        )
       );
       showToast("Member removed from trip", "info");
     } catch (deleteError: any) {
       console.error("Failed to delete member:", deleteError);
-      const serverMsg = deleteError?.response?.data?.message || "Failed to delete member";
+      const serverMsg =
+        deleteError?.response?.data?.message || "Failed to delete member";
       showToast(serverMsg, "error");
     }
   };
@@ -284,7 +298,7 @@ export const MembersPage: React.FC = () => {
         {canManageMembers ? (
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/20 transition self-start sm:self-auto"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/20 transition self-start sm:self-auto cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
             <span>Add Member</span>
@@ -292,7 +306,7 @@ export const MembersPage: React.FC = () => {
         ) : !isMemberLoggedIn ? (
           <button
             onClick={openLoginModal}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-md transition self-start sm:self-auto"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-md transition self-start sm:self-auto cursor-pointer"
           >
             <LogIn className="w-4 h-4" />
             <span>Organizer Login</span>
@@ -300,7 +314,7 @@ export const MembersPage: React.FC = () => {
         ) : (
           <button
             onClick={openEditProfileModal}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-md transition self-start sm:self-auto"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-md transition self-start sm:self-auto cursor-pointer"
           >
             <Edit3 className="w-4 h-4" />
             <span>Edit My Profile</span>
@@ -314,12 +328,14 @@ export const MembersPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <ShieldAlert className="w-4 h-4 text-slate-500 shrink-0" />
             <span>
-              <strong>Member Mode:</strong> You can edit your own profile by clicking on your card or the header. Only organizers can view other member credentials or modify the roster.
+              <strong>Member Mode:</strong> You can edit your own profile by
+              clicking on your card or the header. Only organizers can view
+              other member credentials or modify the roster.
             </span>
           </div>
           <button
             onClick={openEditProfileModal}
-            className="font-bold underline text-emerald-700 shrink-0"
+            className="font-bold underline text-emerald-700 shrink-0 cursor-pointer"
           >
             Edit Profile
           </button>
@@ -332,31 +348,43 @@ export const MembersPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Lock className="w-4 h-4 text-amber-700 shrink-0" />
             <span>
-              <strong>View-only Mode:</strong> Viewing trip members. Member login is required to edit profiles or access private links.
+              <strong>View-only Mode:</strong> Viewing trip members. Member
+              login is required to edit profiles or access private links.
             </span>
           </div>
           <button
             onClick={openLoginModal}
-            className="font-bold underline text-amber-900 hover:text-amber-700 shrink-0"
+            className="font-bold underline text-amber-900 hover:text-amber-700 shrink-0 cursor-pointer"
           >
             Log In
           </button>
         </div>
       )}
 
-      {/* Members Grid or Empty State */}
-      {memberList.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 space-y-3 shadow-sm">
+      {/* Members Grid with Skeleton Loader */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <MemberCardSkeleton />
+          <MemberCardSkeleton />
+          <MemberCardSkeleton />
+          <MemberCardSkeleton />
+          <MemberCardSkeleton />
+          <MemberCardSkeleton />
+        </div>
+      ) : memberList.length === 0 ? (
+        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 space-y-3 shadow-xs">
           <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
             👥
           </div>
-          <h3 className="font-bold text-slate-800 text-base">No members added yet</h3>
+          <h3 className="font-bold text-slate-800 text-base">
+            No members added yet
+          </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             Add the trip organizer to initialize the trip!
           </p>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs inline-flex items-center gap-1.5 shadow-md shadow-emerald-600/20"
+            className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs inline-flex items-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Add First Member (Organizer)</span>
@@ -373,8 +401,10 @@ export const MembersPage: React.FC = () => {
             return (
               <div
                 key={memberItem._id}
-                className={`p-5 rounded-3xl bg-white border shadow-sm hover:shadow-md transition flex flex-col justify-between gap-4 ${
-                  isSelf ? "border-emerald-300 ring-1 ring-emerald-400/30" : "border-slate-200/80"
+                className={`p-5 rounded-3xl bg-white border shadow-xs hover:shadow-md transition flex flex-col justify-between gap-4 ${
+                  isSelf
+                    ? "border-emerald-300 ring-1 ring-emerald-400/30"
+                    : "border-slate-200/80"
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -429,7 +459,7 @@ export const MembersPage: React.FC = () => {
                     {canEditThisMember && (
                       <button
                         onClick={() => handleOpenEdit(memberItem)}
-                        className="p-2 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition"
+                        className="p-2 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition cursor-pointer"
                         title={isSelf ? "Edit your profile" : "Edit member"}
                       >
                         <Edit3 className="w-4 h-4" />
@@ -440,7 +470,7 @@ export const MembersPage: React.FC = () => {
                     {canManageMembers && (
                       <button
                         onClick={() => handleDeleteMember(memberItem._id)}
-                        className="p-2 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
+                        className="p-2 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer"
                         title="Remove member"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -454,7 +484,9 @@ export const MembersPage: React.FC = () => {
                   <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/60">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <KeyRound className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="text-[11px] font-medium text-slate-500">Password:</span>
+                      <span className="text-[11px] font-medium text-slate-500">
+                        Password:
+                      </span>
                       <span className="font-mono font-bold text-slate-800 text-xs truncate">
                         {displayedPassword || "••••••••"}
                       </span>
@@ -462,9 +494,11 @@ export const MembersPage: React.FC = () => {
 
                     <button
                       type="button"
-                      onClick={(clickEvent) => toggleMemberPassword(memberItem._id, clickEvent)}
+                      onClick={(clickEvent) =>
+                        toggleMemberPassword(memberItem._id, clickEvent)
+                      }
                       disabled={isThisPassLoading}
-                      className="text-[11px] text-emerald-700 font-bold hover:underline flex items-center gap-1 ml-2 shrink-0"
+                      className="text-[11px] text-emerald-700 font-bold hover:underline flex items-center gap-1 ml-2 shrink-0 cursor-pointer"
                     >
                       {isThisPassLoading ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
@@ -512,7 +546,9 @@ export const MembersPage: React.FC = () => {
                   type="text"
                   placeholder="e.g. Rahul Sharma"
                   value={nameInput}
-                  onChange={(changeEvent) => setNameInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setNameInput(changeEvent.target.value)
+                  }
                   required
                   autoFocus
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
@@ -527,7 +563,9 @@ export const MembersPage: React.FC = () => {
                   type="tel"
                   placeholder="e.g. +91 98765 43210"
                   value={phoneInput}
-                  onChange={(changeEvent) => setPhoneInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setPhoneInput(changeEvent.target.value)
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
               </div>
@@ -540,7 +578,9 @@ export const MembersPage: React.FC = () => {
                   type="email"
                   placeholder="e.g. rahul@gmail.com"
                   value={emailInput}
-                  onChange={(changeEvent) => setEmailInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setEmailInput(changeEvent.target.value)
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
               </div>
@@ -553,7 +593,9 @@ export const MembersPage: React.FC = () => {
                   type="password"
                   placeholder="Leave empty to use server default"
                   value={passwordInput}
-                  onChange={(changeEvent) => setPasswordInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setPasswordInput(changeEvent.target.value)
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
               </div>
@@ -563,10 +605,15 @@ export const MembersPage: React.FC = () => {
                   type="checkbox"
                   id="organizerCheck"
                   checked={isOrganizerInput}
-                  onChange={(changeEvent) => setIsOrganizerInput(changeEvent.target.checked)}
+                  onChange={(changeEvent) =>
+                    setIsOrganizerInput(changeEvent.target.checked)
+                  }
                   className="rounded text-emerald-600 focus:ring-emerald-500"
                 />
-                <label htmlFor="organizerCheck" className="text-xs text-slate-700 select-none font-medium">
+                <label
+                  htmlFor="organizerCheck"
+                  className="text-xs text-slate-700 select-none font-medium"
+                >
                   Mark as Trip Organizer / Lead
                 </label>
               </div>
@@ -575,14 +622,14 @@ export const MembersPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs"
+                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -611,7 +658,10 @@ export const MembersPage: React.FC = () => {
               <span>Edit Member: {editingTargetMember.name}</span>
             </h3>
 
-            <form onSubmit={handleSaveMemberEdit} className="space-y-3.5 text-sm">
+            <form
+              onSubmit={handleSaveMemberEdit}
+              className="space-y-3.5 text-sm"
+            >
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Full Name *
@@ -619,7 +669,9 @@ export const MembersPage: React.FC = () => {
                 <input
                   type="text"
                   value={editNameInput}
-                  onChange={(changeEvent) => setEditNameInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setEditNameInput(changeEvent.target.value)
+                  }
                   required
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
@@ -632,7 +684,9 @@ export const MembersPage: React.FC = () => {
                 <input
                   type="tel"
                   value={editPhoneInput}
-                  onChange={(changeEvent) => setEditPhoneInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setEditPhoneInput(changeEvent.target.value)
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
               </div>
@@ -644,7 +698,9 @@ export const MembersPage: React.FC = () => {
                 <input
                   type="email"
                   value={editEmailInput}
-                  onChange={(changeEvent) => setEditEmailInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setEditEmailInput(changeEvent.target.value)
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
               </div>
@@ -660,7 +716,7 @@ export const MembersPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowEditPassword(!showEditPassword)}
-                      className="text-xs text-emerald-700 font-bold hover:underline flex items-center gap-1"
+                      className="text-xs text-emerald-700 font-bold hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       {showEditPassword ? (
                         <>
@@ -676,7 +732,9 @@ export const MembersPage: React.FC = () => {
                     </button>
                   </div>
                   <div className="font-mono text-xs font-bold text-slate-800 bg-white px-3 py-1.5 rounded-xl border border-slate-200/80">
-                    {showEditPassword ? editCurrentPassword : "••••••••••••"}
+                    {showEditPassword
+                      ? editCurrentPassword
+                      : "••••••••••••"}
                   </div>
                 </div>
               )}
@@ -689,7 +747,9 @@ export const MembersPage: React.FC = () => {
                   type="password"
                   placeholder="Leave empty to keep unchanged"
                   value={editPasswordInput}
-                  onChange={(changeEvent) => setEditPasswordInput(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setEditPasswordInput(changeEvent.target.value)
+                  }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
                 />
               </div>
@@ -699,10 +759,15 @@ export const MembersPage: React.FC = () => {
                   type="checkbox"
                   id="editOrganizerCheck"
                   checked={editIsOrganizer}
-                  onChange={(changeEvent) => setEditIsOrganizer(changeEvent.target.checked)}
+                  onChange={(changeEvent) =>
+                    setEditIsOrganizer(changeEvent.target.checked)
+                  }
                   className="rounded text-emerald-600 focus:ring-emerald-500"
                 />
-                <label htmlFor="editOrganizerCheck" className="text-xs text-slate-700 select-none font-medium">
+                <label
+                  htmlFor="editOrganizerCheck"
+                  className="text-xs text-slate-700 select-none font-medium"
+                >
                   Trip Organizer / Lead
                 </label>
               </div>
@@ -711,14 +776,14 @@ export const MembersPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setEditingTargetMember(null)}
-                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs"
+                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isEditSubmitting}
-                  className="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isEditSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

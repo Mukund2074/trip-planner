@@ -20,25 +20,32 @@ The application provides 4 core views:
    - **Organizer Controls**: Trip organizers can edit any member's details, view their password in the edit modal, or remove them from the trip.
    - Clean card-based interface with dynamic avatars.
 3. **Expenses & Settlements (`/expenses`)**:
-   - Total trip spend calculation, fully settled expenses total, and pending collections totals.
-   - Multi-category expense tracking (*Food, Travel, Stay, Tickets, Activities, Shopping, Other*).
+   - **Skeleton Loaders**: Summary cards and expense items show smooth shimmer placeholders while Atlas API responds, preventing any confusing `₹0` flashes.
+   - **Instant Search**: Real-time search across expense titles and notes with clear button.
+   - **1-Click Quick Presets**:
+     - `⚡ My Unpaid Dues`: Shows expenses where you owe money and haven't repaid yet.
+     - `💵 My Pending Collections`: For payers to see who owes them reimbursement.
+     - `⏳ All Unsettled`: Shows all expenses awaiting complete settlement.
+     - `✅ Fully Settled`: Shows all 100% completed expenses.
+   - **Advanced Multi-Dimensional Filtering**:
+     - Category chips (*Food, Travel, Stay, Tickets, Activities, Shopping, Other*).
+     - Paid By selector (filter by specific payer).
+     - Split Member selector (filter by participant).
+     - Settlement status selector (*Pending* vs *Settled*).
+   - **Flexible Sorting**:
+     - Date: *Newest First* | *Oldest First*
+     - Amount: *High to Low* | *Low to High*
+     - Status: *Unsettled First*
+     - Alphabetical: *A → Z*
+   - **Live Filter Summary Strip**:
+     - Dynamic totals for active filters (`Showing X of Y • Filtered Total: ₹... (₹... Pending)`).
+     - One-click `Reset Filters` button.
    - **Person-Wise Split & Repayment Confirmation**:
      - Calculates individual share per person (`₹Amount / splitCount`).
-     - Shows each participant's payment status for that specific expense:
-       - Payer is marked as `Paid (Payer)`
-       - Other participants are marked as `Paid ✓` or `Unpaid`
-     - Status badges: `All Settled ✓` or `X / Y Paid`.
-   - **Strict Confirmation Permission (Creator + Organizer Only)**:
-     - Only the **member who paid for the expense** OR a **Trip Organizer** can click **"Mark Paid"** to confirm that a member has repaid their share.
-     - Members who owe money **cannot** settle themselves on someone else's expense.
-   - Click-to-edit expense details with dynamic split participants.
+     - Creator / Organizer confirmation permissions.
 4. **Checklist & Checkpoints (`/checklist`)**:
-   - Categorized checkpoint tracking:
-     - Places & Viewpoints
-     - Adventure & Activities
-     - Hotels & Stays
-     - Food & Dining stops
-     - Essentials & Travel gear
+   - Skeleton loading for progress bar and checkpoint items.
+   - Categorized checkpoint tracking (*Places, Adventure, Hotels, Food, Essentials*).
    - Real-time progress bar and completion counter.
    - Category filtering chips to filter checkpoint items.
 

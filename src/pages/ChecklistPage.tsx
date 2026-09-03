@@ -4,11 +4,18 @@ import { useMemberAuth } from "../context/MemberAuthContext";
 import { apiClient } from "../lib/api";
 import { ChecklistItem, ChecklistResponse } from "../types";
 import {
+  ChecklistItemSkeleton,
+  Skeleton,
+} from "../components/common/Skeleton";
+import {
+  CustomSelect,
+  CustomSelectOption,
+} from "../components/common/CustomSelect";
+import {
   CheckCircle2,
   Circle,
   Plus,
   Trash2,
-  Compass,
   Filter,
   Loader2,
   BookmarkPlus,
@@ -19,14 +26,18 @@ import {
 export const ChecklistPage: React.FC = () => {
   const { currentTrip, showToast } = useTrip();
   const { isMemberLoggedIn, openLoginModal } = useMemberAuth();
-  const [checklistData, setChecklistData] = useState<ChecklistResponse | null>(null);
+  const [checklistData, setChecklistData] =
+    useState<ChecklistResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedFilterCategory, setSelectedFilterCategory] = useState<string>("All");
+  const [selectedFilterCategory, setSelectedFilterCategory] =
+    useState<string>("All");
 
   // Modal and form states
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [newItemText, setNewItemText] = useState<string>("");
-  const [newItemCategory, setNewItemCategory] = useState<string>("Places & Viewpoints");
+  const [newItemCategory, setNewItemCategory] = useState<string>(
+    "Places & Viewpoints"
+  );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const categoriesOptions = [
@@ -108,7 +119,9 @@ export const ChecklistPage: React.FC = () => {
           completedCount: nextCompletedCount,
           progressPercentage:
             previousData.totalCount > 0
-              ? Math.round((nextCompletedCount / previousData.totalCount) * 100)
+              ? Math.round(
+                  (nextCompletedCount / previousData.totalCount) * 100
+                )
               : 0,
         };
       });
@@ -155,7 +168,8 @@ export const ChecklistPage: React.FC = () => {
       }
     } catch (createError: any) {
       console.error("Failed to add checklist item:", createError);
-      const serverMsg = createError?.response?.data?.message || "Failed to add item";
+      const serverMsg =
+        createError?.response?.data?.message || "Failed to add item";
       showToast(serverMsg, "error");
     } finally {
       setIsSubmitting(false);
@@ -204,57 +218,36 @@ export const ChecklistPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold mb-2">
-            <Compass className="w-3.5 h-3.5" />
-            <span>Places, Stays & Adventure Checkpoints</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold mb-2">
+            <span>🗺️</span>
+            <span>Checkpoints & Itinerary Tracker</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Trip Checklist
+            Trip Checkpoints
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            {isMemberLoggedIn
-              ? "Track must-visit places, thrill rides, hotels, dhaba stops, and key travel items"
-              : "Guest View: View all checkpoints. Member login required to check off or add items."}
+            Essential places to visit, hotels, adventure rides, and trip items.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start sm:self-auto">
-          {/* Completion Counter Banner */}
-          <div className="bg-white px-4 py-2.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-3">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Progress
-              </div>
-              <div className="text-sm sm:text-base font-extrabold text-emerald-700">
-                {checklistData
-                  ? `${checklistData.completedCount} / ${checklistData.totalCount}`
-                  : "0 / 0"}
-              </div>
-            </div>
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 font-extrabold text-xs flex items-center justify-center">
-              {checklistData ? `${checklistData.progressPercentage}%` : "0%"}
-            </div>
-          </div>
-
-          {/* Add to Checklist Button (Opens Modal) */}
-          {isMemberLoggedIn ? (
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/20 transition shrink-0"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add to Checklist</span>
-            </button>
-          ) : (
-            <button
-              onClick={openLoginModal}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-md transition shrink-0"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Member Login to Add</span>
-            </button>
-          )}
-        </div>
+        {/* Action Button */}
+        {isMemberLoggedIn ? (
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/20 transition self-start sm:self-auto cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add to Checklist</span>
+          </button>
+        ) : (
+          <button
+            onClick={openLoginModal}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-md transition self-start sm:self-auto cursor-pointer"
+          >
+            <LogIn className="w-4 h-4" />
+            <span>Member Login to Add</span>
+          </button>
+        )}
       </div>
 
       {/* Guest Mode Notification Banner */}
@@ -263,110 +256,120 @@ export const ChecklistPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Lock className="w-4 h-4 text-amber-700 shrink-0" />
             <span>
-              <strong>View-only Mode:</strong> You can view all checklist items. Log in as a member to check off items or add new checkpoints.
+              <strong>View-only Mode:</strong> You can view all trip
+              checkpoints. Log in as a member to check off items or add new
+              ones.
             </span>
           </div>
           <button
             onClick={openLoginModal}
-            className="font-bold underline text-amber-900 hover:text-amber-700 shrink-0"
+            className="font-bold underline text-amber-900 hover:text-amber-700 shrink-0 cursor-pointer"
           >
             Log In
           </button>
         </div>
       )}
 
-      {/* Progress Bar */}
-      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
-        <div
-          className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-500"
-          style={{
-            width: `${checklistData ? checklistData.progressPercentage : 0}%`,
-          }}
-        />
-      </div>
-
-      {/* Quick Inline Add Form (Member-only) */}
-      {isMemberLoggedIn && (
-        <form
-          onSubmit={handleAddItem}
-          className="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center gap-3"
-        >
-          <div className="relative flex-1 w-full">
-            <input
-              type="text"
-              placeholder="Quick add: place, ride, hotel, or item (e.g. Tiger Point sunset, Nitro roller coaster)..."
-              value={newItemText}
-              onChange={(changeEvent) => setNewItemText(changeEvent.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm outline-none"
-            />
+      {/* Progress Bar Card with Skeleton Loader */}
+      {isLoading ? (
+        <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-3 animate-pulse">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-32 rounded-lg" />
+            <Skeleton className="h-5 w-20 rounded-md" />
+          </div>
+          <Skeleton className="h-2.5 w-full rounded-full" />
+        </div>
+      ) : (
+        <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Checklist Completion
+              </span>
+              <div className="text-lg font-extrabold text-slate-800 mt-0.5">
+                {checklistData?.completedCount || 0} of{" "}
+                {checklistData?.totalCount || 0} Items Done
+              </div>
+            </div>
+            <div className="text-2xl sm:text-3xl font-black text-emerald-600">
+              {checklistData?.progressPercentage || 0}%
+            </div>
           </div>
 
-          <select
-            value={newItemCategory}
-            onChange={(changeEvent) => setNewItemCategory(changeEvent.target.value)}
-            className="w-full sm:w-60 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold outline-none text-slate-800"
-          >
-            {categoriesOptions.map((categoryOption) => (
-              <option key={categoryOption} value={categoryOption}>
-                {getCategoryIcon(categoryOption)} {categoryOption}
-              </option>
-            ))}
-          </select>
-
-          <button
-            type="submit"
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shrink-0 shadow-md shadow-emerald-600/20"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add</span>
-          </button>
-        </form>
+          <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500"
+              style={{
+                width: `${checklistData?.progressPercentage || 0}%`,
+              }}
+            />
+          </div>
+        </div>
       )}
 
-      {/* Filter Tabs */}
+      {/* Category Filter Chips */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
         <span className="font-bold text-slate-400 uppercase tracking-wider text-[10px] shrink-0 mr-1 flex items-center gap-1">
           <Filter className="w-3 h-3" />
-          <span>Filter:</span>
+          <span>Category:</span>
         </span>
-        {["All", ...categoriesOptions].map((filterOption) => (
+        <button
+          onClick={() => setSelectedFilterCategory("All")}
+          className={`px-3 py-1.5 rounded-xl font-semibold transition shrink-0 cursor-pointer ${
+            selectedFilterCategory === "All"
+              ? "bg-slate-900 text-white"
+              : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+          }`}
+        >
+          All Items
+        </button>
+        {categoriesOptions.map((catOption) => (
           <button
-            key={filterOption}
-            onClick={() => setSelectedFilterCategory(filterOption)}
-            className={`px-3 py-1.5 rounded-xl font-semibold transition shrink-0 ${
-              selectedFilterCategory === filterOption
+            key={catOption}
+            onClick={() => setSelectedFilterCategory(catOption)}
+            className={`px-3 py-1.5 rounded-xl font-semibold transition shrink-0 cursor-pointer ${
+              selectedFilterCategory === catOption
                 ? "bg-slate-900 text-white"
                 : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
             }`}
           >
-            {filterOption !== "All" && `${getCategoryIcon(filterOption)} `}
-            {filterOption}
+            {getCategoryIcon(catOption)} {catOption}
           </button>
         ))}
       </div>
 
-      {/* Categorized Checklist Sections or Empty State */}
-      {categoryKeys.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 space-y-3 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
-            🏔️
+      {/* Checklist Items Groups with Skeleton Loader */}
+      {isLoading ? (
+        <div className="space-y-3">
+          <ChecklistItemSkeleton />
+          <ChecklistItemSkeleton />
+          <ChecklistItemSkeleton />
+          <ChecklistItemSkeleton />
+        </div>
+      ) : !checklistData || checklistData.items.length === 0 ? (
+        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 space-y-3 shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto text-2xl">
+            🗺️
           </div>
-          <h3 className="font-bold text-slate-800 text-base">Checklist is empty</h3>
+          <h3 className="font-bold text-slate-800 text-base">
+            No checkpoints added yet
+          </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Add viewpoints, activities, hotel check-ins, or dining stops.
+            Add key spots to visit in Lonavala (Tiger Point, Bhushi Dam) or
+            Imagicaa rides.
           </p>
           {isMemberLoggedIn ? (
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs inline-flex items-center gap-1.5 shadow-md shadow-emerald-600/20"
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs inline-flex items-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Add to Checklist</span>
+              <span>Add First Checkpoint</span>
             </button>
           ) : (
             <button
               onClick={openLoginModal}
-              className="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-xs inline-flex items-center gap-1.5 shadow-md"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-xs inline-flex items-center gap-1.5 shadow-md cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               <span>Member Login to Add</span>
@@ -374,71 +377,63 @@ export const ChecklistPage: React.FC = () => {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {categoryKeys.map((categoryName) => {
-            const categoryItems = categoriesMap[categoryName];
-            const completedCategoryCount = categoryItems.filter(
-              (categoryItem) => categoryItem.isCompleted
-            ).length;
-
+        <div className="space-y-6">
+          {categoryKeys.map((categoryGroup) => {
+            const items = categoriesMap[categoryGroup];
             return (
-              <div
-                key={categoryName}
-                className="rounded-3xl bg-white border border-slate-200/80 p-5 shadow-sm space-y-3"
-              >
-                {/* Category Header */}
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                    <span className="text-base">{getCategoryIcon(categoryName)}</span>
-                    <span>{categoryName}</span>
-                  </h3>
-                  <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                    {completedCategoryCount} / {categoryItems.length}
+              <div key={categoryGroup} className="space-y-2.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5 px-1">
+                  <span>{getCategoryIcon(categoryGroup)}</span>
+                  <span>{categoryGroup}</span>
+                  <span className="text-slate-400 font-normal">
+                    ({items.filter((itemCandidate) => itemCandidate.isCompleted).length}
+                    /{items.length})
                   </span>
-                </div>
+                </h3>
 
-                {/* Items List */}
                 <div className="space-y-2">
-                  {categoryItems.map((checklistItem) => {
+                  {items.map((checklistItem) => {
+                    const isDone = checklistItem.isCompleted;
+
                     return (
                       <div
                         key={checklistItem._id}
-                        className={`flex items-center justify-between p-3 rounded-2xl border transition ${
-                          checklistItem.isCompleted
-                            ? "bg-slate-50/80 border-slate-200"
-                            : "bg-white border-slate-100 hover:border-emerald-200 hover:bg-slate-50/50 shadow-xs"
+                        onClick={() => handleToggleChecklist(checklistItem)}
+                        className={`p-3.5 sm:p-4 rounded-2xl border transition flex items-center justify-between gap-3 cursor-pointer group ${
+                          isDone
+                            ? "bg-slate-50 border-slate-200 text-slate-400 line-through"
+                            : "bg-white border-slate-200 hover:border-emerald-300 shadow-xs text-slate-800"
                         }`}
                       >
-                        <button
-                          type="button"
-                          onClick={() => handleToggleChecklist(checklistItem)}
-                          className="flex items-center gap-3 min-w-0 text-left flex-1 select-none"
-                        >
-                          {checklistItem.isCompleted ? (
-                            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                          ) : (
-                            <Circle className="w-5 h-5 text-slate-300 hover:text-emerald-500 shrink-0" />
-                          )}
-                          <span
-                            className={`text-xs sm:text-sm font-medium truncate ${
-                              checklistItem.isCompleted
-                                ? "line-through text-slate-400"
-                                : "text-slate-800 font-semibold"
-                            }`}
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <button
+                            type="button"
+                            className="shrink-0 transition"
                           >
+                            {isDone ? (
+                              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                            ) : (
+                              <Circle className="w-5 h-5 text-slate-300 group-hover:text-emerald-500" />
+                            )}
+                          </button>
+
+                          <span className="text-xs sm:text-sm font-medium truncate">
                             {checklistItem.itemText}
                           </span>
-                        </button>
+                        </div>
 
-                        {/* Delete button: ONLY for members */}
+                        {/* Delete Button (Members Only) */}
                         {isMemberLoggedIn && (
                           <button
                             type="button"
-                            onClick={() => handleDeleteItem(checklistItem._id)}
-                            className="p-1.5 text-slate-300 hover:text-rose-600 rounded-xl transition shrink-0"
+                            onClick={(clickEvent) => {
+                              clickEvent.stopPropagation();
+                              handleDeleteItem(checklistItem._id);
+                            }}
+                            className="p-1.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition opacity-0 group-hover:opacity-100 shrink-0 cursor-pointer"
                             title="Delete item"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         )}
                       </div>
@@ -451,7 +446,7 @@ export const ChecklistPage: React.FC = () => {
         </div>
       )}
 
-      {/* Add to Checklist Modal */}
+      {/* Add Checklist Item Modal */}
       {isAddModalOpen && (
         <div
           className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
@@ -461,50 +456,39 @@ export const ChecklistPage: React.FC = () => {
             className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100"
             onClick={(clickEvent) => clickEvent.stopPropagation()}
           >
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                <BookmarkPlus className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">
-                  Add to Checklist
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Places, thrill rides, hotels, food, or luggage
-                </p>
-              </div>
-            </div>
+            <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <BookmarkPlus className="w-5 h-5 text-emerald-600" />
+              <span>Add Trip Checkpoint</span>
+            </h3>
 
-            <form onSubmit={handleAddItem} className="space-y-4 text-sm">
+            <form onSubmit={handleAddItem} className="space-y-3.5 text-sm">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Category *
-                </label>
-                <select
+                <CustomSelect
+                  label="Category *"
                   value={newItemCategory}
-                  onChange={(changeEvent) => setNewItemCategory(changeEvent.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-xs font-semibold outline-none text-slate-800"
-                >
-                  {categoriesOptions.map((categoryOption) => (
-                    <option key={categoryOption} value={categoryOption}>
-                      {getCategoryIcon(categoryOption)} {categoryOption}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setNewItemCategory}
+                  options={categoriesOptions.map((catOption) => ({
+                    value: catOption,
+                    label: catOption,
+                    icon: <span>{getCategoryIcon(catOption)}</span>,
+                  }))}
+                />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Item / Checkpoint Description *
+                  Checkpoint / Item Name *
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Tiger Point sunset / Nitro roller coaster / Hotel check-in"
+                  placeholder="e.g. Tiger Point sunset / Deep space ride / Power bank"
                   value={newItemText}
-                  onChange={(changeEvent) => setNewItemText(changeEvent.target.value)}
+                  onChange={(changeEvent) =>
+                    setNewItemText(changeEvent.target.value)
+                  }
                   required
                   autoFocus
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-sm"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none text-xs sm:text-sm"
                 />
               </div>
 
@@ -512,19 +496,19 @@ export const ChecklistPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs"
+                  className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting || !newItemText.trim()}
-                  className="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className="w-1/2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    "Save to Checklist"
+                    "Save Item"
                   )}
                 </button>
               </div>
